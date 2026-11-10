@@ -1,5 +1,11 @@
 # Days Gone Achievement Tracker
 
+## Current iteration
+
+**v1.3.7 — per-user bespoke deployment standard**
+
+The installer/uninstaller architecture now matches the project requirement: the visible UI is entirely ours, while NSIS runs silently underneath as the deployment mechanism only. The old assisted-wizard skin remains archived for reference and is no longer part of the active build.
+
 ### v1.0.0 — game-native interface redesign
 
 - Rebuilt the application hierarchy around a Days Gone drifter/road-ledger language rather than generic dashboard cards.
@@ -23,7 +29,7 @@
 
 A read-only Windows desktop tracker for all **67 Days Gone Steam achievements**, including **22 exact Steam counters** and optional evidence from a selected Days Gone save.
 
-Current build: **v1.0.0 — game-native interface redesign**.
+Current build: **v1.3.7 — per-user bespoke deployment standard**.
 
 
 ## Spoiler notice
@@ -65,11 +71,22 @@ npm start
 Double-click `BUILD-WINDOWS.bat`. The script verifies the local runtime is not locked, installs the pinned builder if needed, builds the x64 NSIS installer and copies the result to:
 
 ```text
-RELEASE\Days-Gone-Achievement-Tracker-Setup-v0.2.6.exe
+RELEASE\Days-Gone-Achievement-Tracker-Setup-v1.3.7.exe
 ```
 
 The full source ZIP contains both BAT files, the silent VBS launcher, all source, tests, installer theme assets and build configuration. `node_modules`, `dist` and `RELEASE` are intentionally excluded.
 
+## Engine-only bespoke installer/uninstaller architecture
+
+The Windows deployment system uses **Shared Bespoke Deployment Shell v2.0.3**. The visible installer and uninstaller are a frameless Electron shell owned entirely by the project. NSIS is retained only as the silent deployment engine underneath for payload installation/removal, current-user registry entries, current-user shortcuts, Add/Remove Programs registration and upgrade handling.
+
+The visible installer stays in one persistent window and changes in place through **Ready → Installing → Complete/Error**. The visible uninstaller uses the same shared shell and changes through **Confirm uninstall → Removing → Complete/Error**. Buttons, the in-window folder selector, progress presentation, status copy, window controls and the default-enabled **Launch [Project Name]** checkbox are all part of the bespoke UI. The Browse action never opens a native Windows folder dialog. Standard NSIS/MUI pages are never part of the normal visible journey. Installation is scoped to the current Windows user under `%LOCALAPPDATA%\Programs`, so normal install/uninstall does not request UAC elevation; Windows-owned security surfaces such as SmartScreen may still appear independently.
+
+Each project supplies only `deployment-ui/project.json`, its badge and its game-specific hero artwork. The shared implementation lives in `deployment-ui/main.js`, `preload.js`, `renderer.js`, `index.html`, `styles.css` and `electron-builder.config.js`. `tools/deployment-preflight.js` enforces the engine/UI separation before packaging.
+
+**Migration note:** uninstall any earlier machine-wide/`Program Files` test build before installing this per-user release. The new installer intentionally does not elevate itself to remove an older all-users installation.
+
+The build is intentionally three-stage: build the bespoke portable uninstaller shell, build the internal NSIS deployment engine, then embed that engine inside the bespoke portable Setup shell. Windows' uninstall registration is redirected to the bespoke uninstaller shell, while silent upgrades and quiet removal are delegated to the hidden raw NSIS uninstaller.
 ## Discovery
 
 The tracker resolves Steam from the Windows registry, reads `libraryfolders.vdf`, finds `appmanifest_1259420.acf`, and locates Days Gone's own `steam_api64.dll`. The local schema is read from Steam's `appcache\stats\UserGameStatsSchema_1259420.bin`.
@@ -86,10 +103,14 @@ The tracker does not guess by nearby strings or broad keywords. Each cumulative 
 
 ## Visual identity
 
-The application, splash, icons and assisted installer use an original charcoal/asphalt, weathered-pine and rust-orange road theme. The main background is an optimised original 1672×941 WebP road-and-motorcycle scene. Six predecoded, full-width card landscapes rotate through road, mountain, lookout, camp, tunnel and mill environments. The images cover the complete surplus panel beneath controlled dark gradients. The artwork does not include copied game logos or official key art.
+The application, splash, icons and Project Gone skin for the shared bespoke installer use an original charcoal/asphalt, weathered-pine and rust-orange road theme. The main background is an optimised original 1672×941 WebP road-and-motorcycle scene. Six predecoded, full-width card landscapes rotate through road, mountain, lookout, camp, tunnel and mill environments. The images cover the complete surplus panel beneath controlled dark gradients. The artwork does not include copied game logos or official key art.
 
 ### Shared tracker footer
 
 The application uses the universal achievement-tracker footer structure while presenting this tracker as **Project Gone**. It includes the persistent spoiler warning, Phil Forster attribution, portfolio link, automatic copyright year and the running Electron package version. The standard GitHub footer slot is present as **Repository pending** until a verified Project Gone repository is published; no URL is invented.
 
 © 2026 Phil Forster · https://philforster.co.uk
+## Deployment polish (v1.3.7)
+
+The bespoke current-user installer now hands directly into the application splash before closing, and uninstall cleanup runs without a visible terminal window. `RELEASE` contains only the current Setup executable.
+

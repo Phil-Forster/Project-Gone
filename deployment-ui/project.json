@@ -1,0 +1,36 @@
+{
+  "version": "1.3.8",
+  "projectSlug": "project-gone",
+  "projectName": "Project Gone",
+  "gameName": "Days Gone",
+  "installFolderName": "Days Gone Achievement Tracker",
+  "appExecutableName": "Days Gone Achievement Tracker.exe",
+  "rawUninstallerName": "Uninstall Days Gone Achievement Tracker.exe",
+  "customUninstallerName": "Project Gone Uninstaller.exe",
+  "setupArtifactName": "Days-Gone-Achievement-Tracker-Setup-v${version}.exe",
+  "accent": "#c56b36",
+  "accentBright": "#e49a61",
+  "accentDim": "#7d4327",
+  "visual": {
+    "code": "HIGHWAY // FIELD LOG",
+    "motif": "DRIFTER SYSTEM",
+    "caption": "Steam-first progress telemetry \u00b7 local tracker",
+    "coordinate": "OREGON // LOCAL // READ ONLY"
+  },
+  "frameworkVersion": "2.0.4",
+  "copy": {
+    "readyEyebrow": "READY FOR THE ROAD",
+    "readyTitle": "Install Project Gone",
+    "readyBody": "A local Days Gone achievement companion with Steam-first state, exact counters and optional save evidence.",
+    "readyNote": "Nothing in the game directory or your saves is modified. Project Gone only reads the local data it needs.",
+    "completeBody": "Project Gone is installed and ready to track your Days Gone achievement state.",
+    "removeBody": "Remove the Project Gone tracker from this PC. Days Gone, Steam data and game saves remain untouched.",
+    "uninstallCompleteBody": "Project Gone has been removed. Your Days Gone installation and saves were not changed.",
+    "steps": [
+      "Prepare",
+      "Deploy",
+      "Register",
+      "Finalise"
+    ]
+  }
+}

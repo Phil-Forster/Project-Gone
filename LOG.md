@@ -1,4 +1,142 @@
+# 1.3.8 — 04/09/2026
+
+- restored the heavier segmented lower road markers beneath the completion dial so Project Gone keeps the chunkier original gauge treatment
+- retained the current footer and filter polish unchanged
+
+# 1.3.7 — 04/09/2026
+
+- removed the boxed active-state treatment from the achievement filters so only the underline denotes the live selection
+- retained and carried forward the footer metadata alignment nudge, including the small extra inset on the portfolio item
+
+# 1.3.6 — 04/09/2026
+
+## Shared interface polish
+
+- Rebuilt the universal footer metadata row with cleaner spacing, lighter typography and better-balanced column widths.
+- Replaced the generic GitHub glyph with the GitHub mark and upgraded the Project, Author and Portfolio symbols.
+- Ensured the full `philforster.co.uk` portfolio address remains visible at desktop footer widths.
+- Removed hard-coded teal footer chrome and made borders/backgrounds derive from each tracker's own palette.
+- Retained the project/game badge geometry unchanged in the footer.
+- Reworked the All / Unlocked / Locked / Unknown controls into compact instrument-style filters with meaningful state icons and state-aware active accents.
+
+# 1.3.4 — 04/09/2026
+
+- Improved installer-to-application handoff: Finish now launches the tracker and keeps the bespoke installer visible until the application splash has actually appeared (with a bounded fail-safe), removing the previous dead pause.
+- Replaced the temporary-uninstaller `cmd.exe` / loopback `ping` deletion delay with a detached, hidden PowerShell cleanup process so no terminal window flashes during uninstall.
+- `RELEASE` remains intentionally clean: the current Setup executable only.
+- Shared Bespoke Deployment Shell updated to v2.0.4.
+
 # Days Gone Achievement Tracker — Development Log
+
+## v1.3.3 — 04/09/2026
+
+- Corrected the bespoke installer-shell version source after the three-stage Windows build produced a Setup executable with the previous deployment-UI package version in its filename.
+- Synchronized the root package, `deployment-ui/project.json` and `deployment-ui/package.json` versions and made the installer artifact name resolve explicitly from the root package version.
+- Advanced **Shared Bespoke Deployment Shell** to v2.0.3 and strengthened deployment preflight checks so version drift between the tracker, deployment project and deployment UI fails before packaging.
+- Added deployment-shell package description/author metadata to remove the Electron Builder metadata warnings seen during Windows packaging.
+- No visible installer/uninstaller design, per-user deployment behaviour, tracker UI or game-reading logic changed in this patch.
+- Updated `README.md`, `LOG.md`, package versions and expected Setup filenames for this iteration.
+
+## v1.3.2 — 04/09/2026
+
+- Standardised the bespoke installer/uninstaller on a **current-user-only** deployment model across all four tracker projects.
+- Changed the default installation root to `%LOCALAPPDATA%\Programs\Days Gone Achievement Tracker` and updated the visible scope label from **ALL USERS** to **CURRENT USER**.
+- Removed the deployment shell's PowerShell/UAC elevation path; the silent NSIS worker now runs directly with `/currentuser` for both installation and removal.
+- Changed Electron Builder's internal NSIS worker to `perMachine: false` and `allowElevation: false`, keeping desktop/Start Menu shortcuts and uninstall registration inside the current user's Windows profile.
+- Restricted custom install locations to the current Windows user profile so selecting a protected machine-wide location cannot silently reintroduce an elevation requirement.
+- Advanced **Shared Bespoke Deployment Shell** to v2.0.2; strengthened deployment preflight checks to reject all-users scope, elevation logic or an all-users UI label.
+- Kept the approved bespoke visual design and state flow unchanged. Updated `README.md`, `LOG.md`, package version and deployment project version for this iteration.
+
+## v1.3.1 — 04/09/2026
+
+- Corrected the Windows deployment orchestrator after `spawnSync` returned `EINVAL` when attempting to execute Electron Builder's `.cmd` shim directly.
+- The shared build now invokes `electron-builder/out/cli/cli.js` with the active Node executable, avoiding Windows batch-shim spawning entirely while preserving the same three-stage uninstaller → silent NSIS engine → installer-shell pipeline.
+- Advanced **Shared Bespoke Deployment Shell** to v2.0.1 and propagated the identical orchestration correction across all four tracker projects.
+- Strengthened `tools/deployment-preflight.js` to reject direct `electron-builder.cmd` / `.bin` shim execution and require the JavaScript CLI invocation contract.
+- No visible installer/uninstaller design, tracker UI, Steam/save logic or deployment mechanics were changed in this patch.
+- Updated `README.md`, `LOG.md`, package version and deployment project version for this iteration; Windows runtime validation remains the release gate.
+
+## v1.3.0 — 04/09/2026
+
+- Replaced the failed assisted-NSIS wizard skin with **Shared Bespoke Deployment Shell v2.0.0**.
+- The visible installer/uninstaller is now a frameless Electron UI; NSIS is invoked only in silent mode as the deployment engine and can no longer leak wizard pages, white panels or native installer buttons into the normal journey.
+- Added shared Ready → Installing → Complete/Error and Confirm uninstall → Removing → Complete/Error state flows, custom in-window folder selector with no native Windows browse dialog, custom controls, bespoke default-enabled **Launch Project Gone** checkbox, keyboard focus states and project-specific artwork/accent configuration.
+- Added a three-stage Windows build: bespoke uninstaller shell → silent NSIS engine → bespoke Setup shell with the engine embedded as an internal resource.
+- Redirected Add/Remove Programs and quiet-uninstall registration to the bespoke uninstaller shell; silent upgrade/removal requests are forwarded to the hidden raw NSIS uninstaller.
+- Archived the previous `build/installer.nsh` / `build/installer/` assisted-wizard implementation under `build/legacy-assisted-installer/`; it is no longer referenced by the active build.
+- Replaced the old installer preflight with `tools/deployment-preflight.js`, which verifies UI/engine separation and required shared assets before packaging.
+- Extended deployment preflight coverage to reject native file/folder dialogs and require the bespoke directory browser bridge, keeping UAC/security prompts as the only Windows-owned visible surfaces.
+- Updated `BUILD-WINDOWS.bat`, `README.md`, `LOG.md`, package version and project deployment configuration for this iteration.
+
+## v1.2.5 — 04/09/2026
+
+- Removed the dead installer-only `BSI_SkipDefaultFinish` function that Windows `makensis` reported as warning 6010; Electron Builder treats NSIS warnings as fatal during packaging.
+- Confirmed against the exact Electron Builder 26.15.7 `assistedInstaller.nsh` contract that defining `customFinishPage` replaces the default installer Finish-page branch entirely, so no installer Finish-page pre-hook is required or valid.
+- Advanced **Shared Bespoke Installer Framework** to v1.0.5 and propagated the identical correction across all four tracker projects.
+- Strengthened `tools/installer-preflight.js` to forbid a phantom installer Finish-page pre-hook/function and to flag unreferenced shared `BSI_*` functions before Windows packaging where statically detectable.
+- Kept the bespoke in-place completion state, default-enabled **Launch Project Gone** control, installer/uninstaller visuals, application UI and tracker logic unchanged.
+- Updated `README.md`, `LOG.md` and package version for this iteration; Windows compile/runtime validation remains the release gate.
+
+## v1.2.4 — 04/09/2026
+
+- Corrected the shared launch-on-Finish architecture after Windows `makensis` showed that directly expanding `UAC_AsUser_ExecShell` inside the bespoke framework occurs before Electron Builder has made the UAC plugin available to that compile section.
+- Advanced **Shared Bespoke Installer Framework** to v1.0.4 and removed plugin-dependent launch calls from the early shared function body that Electron Builder compiles before its broker plug-ins are available.
+- Launch-on-Finish is now defined inside the late `customFinishPage` expansion, matching Electron Builder's own `StartApp` placement and using its supported `StdUtils.ExecShellAsUser` broker while the stock Finish page remains suppressed.
+- Strengthened `tools/installer-preflight.js` to reject plugin-dependent launch calls in early Function bodies and require the late-bound launch-broker contract.
+- No visible installer/uninstaller design, application UI, achievement logic, Steam/save handling or project-specific skin was changed in this patch.
+- Updated `README.md`, `LOG.md` and package version for this iteration; Windows compilation/runtime validation remains the release gate.
+
+## v1.2.3 — 04/09/2026
+
+- Removed the shared framework dependency on `StdUtils::ExecShellAsUser` after the Windows Electron Builder NSIS bundle failed compilation because the `StdUtils` runtime plugin was not present.
+- Advanced **Shared Bespoke Installer Framework** to v1.0.3 and switched Launch-on-Finish to the UAC plugin already used by Electron Builder's multi-user installer flow: elevated inner installs call `UAC_AsUser_ExecShell`, while non-elevated installs use normal `ExecShell`.
+- Preserved the bespoke **Launch [Project Name]** toggle, checked by default, and the requirement that Finish launches the tracker at the interactive user's normal integrity level rather than elevated.
+- Strengthened `tools/installer-preflight.js` to require the UAC launch-broker contract and reject any reintroduction of `StdUtils::ExecShellAsUser`.
+- No visible installer/uninstaller design, application UI, achievement logic, Steam/save handling or project-specific skin was changed in this patch.
+- Updated `README.md`, `LOG.md` and package version for this iteration; Windows compilation/runtime validation remains the release gate.
+
+## v1.2.2 — 04/09/2026
+
+- Removed two dead shared NSIS bitmap-handle variables (`BSI.ToggleOnBmp` and `BSI.ToggleOffBmp`) that triggered makensis warning 6001; Electron Builder treats NSIS warnings as fatal during packaging.
+- Advanced **Shared Bespoke Installer Framework** to v1.0.2 and propagated the identical framework correction across all four tracker projects.
+- Strengthened `tools/installer-preflight.js` to reject unused `BSI.*` NSIS variable declarations before Electron Builder starts, preventing the same warnings-as-errors build failure from reaching makensis.
+- No visible installer/uninstaller design, application UI, achievement logic, Steam/save handling or project skin was changed in this patch.
+- Updated `README.md`, `LOG.md` and package version for this iteration; Windows compile/runtime validation remains the release gate.
+
+## v1.2.1 — 04/09/2026
+
+- Corrected the shared `customUnInstallSection` compile contract after Windows `makensis` rejected the hidden finalisation section for calling `un.BSI_InstallCompleted` from a section that was not itself classified as uninstall code.
+- Renamed the hidden post-removal finalisation section to an `un.*` section and marked it `SectionIn RO`, matching NSIS/Electron Builder uninstall-section requirements while preserving the synchronous Removing → Complete transition.
+- Advanced **Shared Bespoke Installer Framework** from v1.0.0 to **v1.0.1** and propagated the identical framework fix across all four tracker projects.
+- Strengthened `tools/installer-preflight.js` so a custom uninstall section now fails preflight unless it is an `un.*`, required, non-optional section; this exact compile failure can no longer pass the project preflight unnoticed.
+- No application UI, Steam/save logic, achievement data or project-specific installer skin was changed in this patch.
+- Updated `README.md`, `LOG.md` and package version for this iteration. Windows compilation/runtime verification remains the release gate.
+
+## v1.2.0 — 04/09/2026
+
+- Replaced the previous project-specific MUI/wizard skin with **Shared Bespoke Installer Framework v1.0.0**, reused verbatim across all four tracker projects.
+- Reduced `build/installer.nsh` to a two-include entry point: project-specific configuration/assets plus the shared state/deployment framework.
+- Rebuilt the visible installer as a persistent branded shell with Ready → Installing → Complete/Error states and no intentionally exposed standard Welcome, Directory or Finish wizard pages.
+- Rebuilt the uninstaller on the same shared shell with Confirm uninstall → Removing → Complete/Error states.
+- Added project-specific setup/removal shell artwork, accent configuration and copy for **Project Gone / Days Gone** while keeping common behaviour in one framework.
+- Added the bespoke **Launch Project Gone** completion toggle, checked by default; Finish launches through the interactive user token when enabled and exits without launching when disabled.
+- Kept NSIS/Electron Builder responsible for deployment mechanics only: elevation, payload extraction/removal, install scope/path, registry data, shortcuts, Add/Remove Programs registration and upgrade handling.
+- Added shared installer preflight checks for architecture drift, forbidden native/wizard UI patterns, required assets/configuration and framework identity.
+- Updated `README.md`, package version and installer documentation for this iteration. Final Windows NSIS compilation and visual/runtime verification remain Windows target checks.
+
+## v1.1.1 — 04/09/2026
+
+- Refined the motorcycle/road completion gauge so the 0–100 scale sits on a protected outer rail and no tick label is washed through by the live completion arc.
+- Repositioned the road-meter detail to preserve the Days Gone instrumentation character without competing with completion text or scale marks.
+- Kept Steam authority, achievement mappings, save parsing, splash, installer and uninstaller behaviour unchanged; installer presentation remains deliberately deferred.
+
+## v1.1.0 — 04/09/2026
+
+- Realigned Project Gone with the shared four-project tracker framework while preserving its Days Gone-specific drifter/road-ledger presentation.
+- Applied the new Project Gone badge across footer, application/shortcut icon, installer icon and uninstaller icon surfaces.
+- Aligned the installer and uninstaller to the shared polished branded progress experience, including game-specific artwork and the slim integrated progress treatment.
+- Kept the established rust/red Project Gone identity and game-specific interface language intact.
+- No Steam authority, achievement mapping, save parsing or write behaviour was changed.
 
 ## v1.0.0 — 03/09/2026
 
